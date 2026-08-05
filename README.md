@@ -2,12 +2,9 @@
 
 JavaScript exercises on higher order functions (`for`, `forEach`, `map`).
 
-## Links
+## Live page
 
-| | |
-| --- | --- |
-| **Live page** | https://mayahelmi.github.io/Higher-Order-Function/ |
-| **Repository** | https://github.com/MayaHelmi/Higher-Order-Function |
+**https://mayahelmi.github.io/Higher-Order-Function/**
 
 The live page runs every exercise in the browser and animates each array operation step by step.
 
