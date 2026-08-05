@@ -13,6 +13,7 @@
 //   shift()     removes the first element          -> removed element
 //   unshift()   adds to the beginning              -> new length
 //   indexOf()   finds an element's index           -> index or -1
+//   reduce()    combines all elements into one     -> one single value
 // ============================================================
 
 const students = ["Rawan", "Wesam", "Hind", "Muhammad", "Esraa", "Dareen"];
@@ -56,6 +57,14 @@ function positionOf(list, name) {
   return list.indexOf(name);
 }
 
+// reduce -> returns ONE value built from the whole array.
+// "total" is the running answer so far. The 0 at the end is its starting value.
+function totalGrades(list) {
+  return list.reduce(function (total, grade) {
+    return total + grade;
+  }, 0);
+}
+
 // The next four CHANGE the array they are given.
 
 // push -> returns the new length
@@ -89,6 +98,7 @@ console.log("filter  ->", passingGrades(grades)); // [88, 92, 60, 75]
 console.log("find    ->", firstFailingGrade(grades)); // 45
 console.log("includes->", isEnrolled(students, "Hind")); // true
 console.log("indexOf ->", positionOf(students, "Esraa")); // 4
+console.log("reduce  ->", totalGrades(grades)); // 393 (all six grades added up)
 
 // push, pop, shift and unshift change the array,
 // so we work on a copy and keep the original safe.
@@ -112,6 +122,7 @@ if (typeof module !== "undefined") {
     firstFailingGrade,
     isEnrolled,
     positionOf,
+    totalGrades,
     addToEnd,
     removeLast,
     removeFirst,

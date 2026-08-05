@@ -640,6 +640,60 @@
     },
   });
 
+  register("m-reduce", {
+    group: "Exercise 5 — array methods",
+    label: "reduce() — many into one",
+    outputLabel: "total so far (the accumulator)",
+    code: [
+      "return list.reduce(function (total, grade) {",
+      "  return total + grade;",
+      "}, 0);",
+    ],
+    build() {
+      const input = grades;
+      const state = {
+        source: indexed(input),
+        output: [{ v: "0", mark: "fresh" }],
+        log: [],
+        note: "reduce starts from the 0 we passed in. That single box is the running total.",
+        line: 0,
+      };
+      const frames = [snap(state)];
+      state.output[0].mark = "kept";
+
+      let total = 0;
+      input.forEach((value, i) => {
+        state.source.forEach((s, j) => (s.mark = j < i ? "done" : "idle"));
+        state.source[i].mark = "active";
+        state.line = 1;
+        state.note = `total is ${total}, grade is ${value}. Returning ${total} + ${value}.`;
+        frames.push(snap(state));
+
+        total = total + value;
+        state.output[0] = { v: String(total), mark: "fresh" };
+        state.note = `That returned value becomes the new total: ${total}.`;
+        frames.push(snap(state));
+        state.output[0].mark = "kept";
+      });
+
+      state.source.forEach((s) => (s.mark = "done"));
+      state.line = 2;
+      state.note =
+        "Six numbers went in and ONE number came out. That is what makes reduce different from map and filter, which both hand back an array.";
+      state.ret = String(total);
+      frames.push(snap(state));
+
+      return {
+        frames,
+        verify: () => ({
+          animation: total,
+          real: totalGrades(grades),
+          call: "totalGrades(grades)",
+        }),
+      };
+    },
+  });
+
   // Mutating methods — the array itself changes, so there is no second row.
 
   function mutatorScenario({ id, label, code, note, apply, verify }) {

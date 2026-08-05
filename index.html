@@ -472,6 +472,16 @@ const methods = [
     }),
   },
   {
+    name: "reduce()",
+    does: "Combines all elements into one value",
+    gives: "One single value",
+    call: "totalGrades(grades)",
+    run: () => ({
+      text: show(totalGrades(grades)),
+      note: "88 + 45 + 92 + 60 + 33 + 75. One value out of six, not an array.",
+    }),
+  },
+  {
     name: "push()",
     does: "Adds to the end",
     gives: "New length",

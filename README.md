@@ -32,7 +32,7 @@ arrow functions, one `if` per rule instead of stacked ternaries, `Math.pow(2, n)
 | `exercise2.js` | Map numbers to `"even"` / `"odd"`, non-numbers to `"N/A"` |
 | `exercise3.js` | Return all names in an array using `forEach` |
 | `exercise4.js` | `fizzbuzz` over an array of numbers, using `map` |
-| `exercise5.js` | One task per array method — `forEach`, `map`, `filter`, `find`, `includes`, `push`, `pop`, `shift`, `unshift`, `indexOf` |
+| `exercise5.js` | One task per array method — `forEach`, `map`, `filter`, `find`, `includes`, `push`, `pop`, `shift`, `unshift`, `indexOf`, `reduce` |
 | `index.html` | Interactive page (Tailwind) that explains and **runs** all five exercises |
 | `visualizer.js` | Step-by-step **animation** — boxes for elements, played one step at a time |
 | `styles.css` | The only hand-written CSS (keyframes + reduced-motion). Everything else is Tailwind |
@@ -67,7 +67,7 @@ what just happened.
 Colours: indigo = being looked at right now, green = kept or added, red strike-through = dropped or
 removed, grey = already visited, dashed = never looked at.
 
-Fourteen operations are animated, chosen to show the differences that are hard to see in text:
+Fifteen operations are animated, chosen to show the differences that are hard to see in text:
 
 - **`for` vs `forEach` vs `map`** on the same input — watch `for` and `forEach` push into an array
   you made yourself, while `map` produces the array for you
@@ -75,6 +75,7 @@ Fourteen operations are animated, chosen to show the differences that are hard t
 - **`find`** stopping at the first match, leaving the rest of the boxes dashed and unread
 - **`shift`** renumbering every remaining element, while **`pop`** disturbs nothing
 - **`push` / `unshift`** returning a *length*, but **`pop` / `shift`** returning an *element*
+- **`reduce`** collapsing six numbers into one, with the running total visible at every step
 
 Each animation ends by calling the real function from the exercise files and comparing it against
 what the animation produced, then showing a ✓ badge. If the animation ever drifted from the code,
@@ -111,8 +112,9 @@ Two notes:
 | `shift()` | Removes the first element | Removed element |
 | `unshift()` | Adds to the beginning | New length |
 | `indexOf()` | Finds an element's index | Index or `-1` |
+| `reduce()` | Combines all elements into one value | One single value |
 
-`push`, `pop`, `shift`, and `unshift` **mutate** the original array. `map`, `filter`, `find`, `includes`, and `indexOf` do not.
+`push`, `pop`, `shift`, and `unshift` **mutate** the original array. `map`, `filter`, `find`, `includes`, `indexOf`, and `reduce` do not.
 
 In `exercise5.js` each method gets one small function that returns *exactly* what the method
 returns, so the "Returns" column above can be read straight off the code:
@@ -125,6 +127,7 @@ returns, so the "Returns" column above can be read straight off the code:
 | `firstFailingGrade(list)` | `find` |
 | `isEnrolled(list, name)` | `includes` |
 | `positionOf(list, name)` | `indexOf` |
+| `totalGrades(list)` | `reduce` |
 | `addToEnd(list, name)` | `push` |
 | `removeLast(list)` | `pop` |
 | `removeFirst(list)` | `shift` |
