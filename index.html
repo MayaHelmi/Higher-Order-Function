@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Higher Order Functions — Exercises</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = { darkMode: "media" };
+</script>
+<!-- Custom CSS lives in its own sheet. Everything else is Tailwind utilities in the markup. -->
+<link rel="stylesheet" href="styles.css" />
+</head>
+
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-200">
+
+<!-- Header -->
+<header class="border-b border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900">
+  <div class="mx-auto max-w-4xl px-6 py-10">
+    <p class="text-sm font-medium uppercase tracking-widest text-indigo-600 dark:text-indigo-400">JavaScript</p>
+    <h1 class="mt-2 text-4xl font-bold tracking-tight text-slate-900 dark:text-white">Higher Order Functions</h1>
+    <p class="mt-3 max-w-2xl text-slate-600 dark:text-slate-400">
+      Five exercises on <code class="rounded bg-slate-100 px-1.5 py-0.5 font-mono text-sm dark:bg-slate-800">for</code>,
+      <code class="rounded bg-slate-100 px-1.5 py-0.5 font-mono text-sm dark:bg-slate-800">forEach</code>,
+      <code class="rounded bg-slate-100 px-1.5 py-0.5 font-mono text-sm dark:bg-slate-800">map</code>
+      and friends. Every "Run" button below calls the real functions from the
+      <code class="rounded bg-slate-100 px-1.5 py-0.5 font-mono text-sm dark:bg-slate-800">exercise*.js</code> files —
+      nothing on this page is a hardcoded result.
+    </p>
+    <nav class="mt-6 flex flex-wrap gap-2 text-sm">
+      <a href="#viz" class="rounded-full bg-indigo-600 px-3 py-1 font-semibold text-white hover:bg-indigo-700">▶ Animation</a>
+      <a href="#ex1" class="rounded-full bg-slate-100 px-3 py-1 font-medium hover:bg-indigo-100 hover:text-indigo-700 dark:bg-slate-800 dark:hover:bg-indigo-950 dark:hover:text-indigo-300">Ex 1</a>
+      <a href="#ex2" class="rounded-full bg-slate-100 px-3 py-1 font-medium hover:bg-indigo-100 hover:text-indigo-700 dark:bg-slate-800 dark:hover:bg-indigo-950 dark:hover:text-indigo-300">Ex 2</a>
+      <a href="#ex3" class="rounded-full bg-slate-100 px-3 py-1 font-medium hover:bg-indigo-100 hover:text-indigo-700 dark:bg-slate-800 dark:hover:bg-indigo-950 dark:hover:text-indigo-300">Ex 3</a>
+      <a href="#ex4" class="rounded-full bg-slate-100 px-3 py-1 font-medium hover:bg-indigo-100 hover:text-indigo-700 dark:bg-slate-800 dark:hover:bg-indigo-950 dark:hover:text-indigo-300">Ex 4</a>
+      <a href="#ex5" class="rounded-full bg-slate-100 px-3 py-1 font-medium hover:bg-indigo-100 hover:text-indigo-700 dark:bg-slate-800 dark:hover:bg-indigo-950 dark:hover:text-indigo-300">Ex 5</a>
+      <a href="#table" class="rounded-full bg-slate-100 px-3 py-1 font-medium hover:bg-indigo-100 hover:text-indigo-700 dark:bg-slate-800 dark:hover:bg-indigo-950 dark:hover:text-indigo-300">Method table</a>
+    </nav>
+  </div>
+</header>
+
+<main class="mx-auto max-w-4xl space-y-10 px-6 py-12">
+
+  <!-- The three ways, side by side -->
+  <section class="grid gap-4 sm:grid-cols-3">
+    <div class="rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900">
+      <h3 class="font-mono text-sm font-bold text-indigo-600 dark:text-indigo-400">for</h3>
+      <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">You manage the index and push into the result array yourself. Most control, most typing.</p>
+    </div>
+    <div class="rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900">
+      <h3 class="font-mono text-sm font-bold text-indigo-600 dark:text-indigo-400">forEach</h3>
+      <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">Cleaner iteration, but it returns <code>undefined</code> — you still build your own array.</p>
+    </div>
+    <div class="rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900">
+      <h3 class="font-mono text-sm font-bold text-indigo-600 dark:text-indigo-400">map</h3>
+      <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">Returns a new array of the same length. Best when every input maps to one output.</p>
+    </div>
+  </section>
+
+  <!-- Animated visualizer -->
+  <section id="viz" class="scroll-mt-6 overflow-hidden rounded-2xl border-2 border-indigo-200 bg-white dark:border-indigo-900/60 dark:bg-slate-900">
+    <div class="border-b border-slate-200 bg-indigo-50/60 px-6 py-4 dark:border-slate-800 dark:bg-indigo-950/30">
+      <h2 class="text-xl font-semibold text-slate-900 dark:text-white">▶ Watch it run</h2>
+      <p class="mt-1 text-sm text-slate-600 dark:text-slate-400">
+        Each box is one element. Press <strong>Play</strong> to watch the array being walked one
+        element at a time, or <strong>Step</strong> to move yourself. The highlighted line of code
+        is the line running right now.
+      </p>
+    </div>
+
+    <div class="px-6 py-5">
+      <!-- Controls -->
+      <div class="flex flex-wrap items-center gap-3">
+        <select id="viz-select"
+          class="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-950"></select>
+        <button id="viz-play" class="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700">Play</button>
+        <button id="viz-back" class="rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium hover:bg-slate-100 dark:border-slate-700 dark:hover:bg-slate-800">‹ Back</button>
+        <button id="viz-step" class="rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium hover:bg-slate-100 dark:border-slate-700 dark:hover:bg-slate-800">Step ›</button>
+        <button id="viz-reset" class="rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium hover:bg-slate-100 dark:border-slate-700 dark:hover:bg-slate-800">Reset</button>
+        <label class="ml-auto flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+          speed
+          <select id="viz-speed" class="rounded-md border border-slate-300 bg-white px-2 py-1 text-xs dark:border-slate-700 dark:bg-slate-950">
+            <option value="1400">slow</option>
+            <option value="900" selected>normal</option>
+            <option value="450">fast</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="mt-5 grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
+        <!-- Code -->
+        <div>
+          <p class="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">the code</p>
+          <div id="viz-code" class="overflow-x-auto rounded-lg bg-slate-900 p-3 font-mono text-[13px] leading-relaxed dark:bg-black"></div>
+          <p id="viz-progress" class="mt-2 text-xs text-slate-400 dark:text-slate-600"></p>
+        </div>
+
+        <!-- Stage -->
+        <div>
+          <div class="flex items-baseline justify-between">
+            <p id="viz-source-label" class="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400"></p>
+            <span id="viz-extra" class="hidden rounded bg-slate-100 px-2 py-0.5 font-mono text-xs text-slate-600 dark:bg-slate-800 dark:text-slate-300"></span>
+          </div>
+          <div id="viz-source" class="flex flex-wrap items-start gap-2"></div>
+
+          <div id="viz-output-wrap" class="mt-5">
+            <p id="viz-output-label" class="mb-2 text-xs font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400"></p>
+            <div id="viz-output" class="flex min-h-[3.5rem] flex-wrap items-start gap-2"></div>
+          </div>
+
+          <div id="viz-log-wrap" class="mt-5 hidden">
+            <p class="mb-2 text-xs font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400"></p>
+            <div id="viz-log" class="min-h-[3rem] rounded-lg bg-slate-900 p-3 text-slate-100 dark:bg-black"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Narration -->
+      <p id="viz-note" class="mt-5 rounded-lg border-l-4 border-indigo-500 bg-slate-50 px-4 py-3 text-sm text-slate-700 dark:bg-slate-950/60 dark:text-slate-300"></p>
+      <div id="viz-ret" class="mt-3 hidden rounded-lg border border-emerald-300 bg-emerald-50 px-4 py-3 dark:border-emerald-800 dark:bg-emerald-950/40"></div>
+      <div id="viz-verify" class="hidden"></div>
+
+      <!-- Legend -->
+      <div class="mt-5 flex flex-wrap gap-x-5 gap-y-2 border-t border-slate-200 pt-4 text-xs text-slate-500 dark:border-slate-800 dark:text-slate-400">
+        <span class="flex items-center gap-1.5"><span class="inline-block h-3 w-3 rounded border-2 border-indigo-500 bg-indigo-50 dark:bg-indigo-950"></span> being looked at now</span>
+        <span class="flex items-center gap-1.5"><span class="inline-block h-3 w-3 rounded border-2 border-emerald-400 bg-emerald-50 dark:bg-emerald-950"></span> kept / added</span>
+        <span class="flex items-center gap-1.5"><span class="inline-block h-3 w-3 rounded border-2 border-rose-300 bg-rose-50 dark:bg-rose-950"></span> dropped / removed</span>
+        <span class="flex items-center gap-1.5"><span class="inline-block h-3 w-3 rounded border-2 border-slate-200 bg-slate-100 dark:border-slate-800 dark:bg-slate-900"></span> already visited</span>
+        <span class="flex items-center gap-1.5"><span class="inline-block h-3 w-3 rounded border-2 border-dashed border-slate-300"></span> never looked at</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Exercise 1 -->
+  <section id="ex1" class="scroll-mt-6 overflow-hidden rounded-2xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900">
+    <div class="border-b border-slate-200 px-6 py-4 dark:border-slate-800">
+      <div class="flex items-center gap-3">
+        <span class="flex h-7 w-7 items-center justify-center rounded-full bg-indigo-600 text-sm font-bold text-white">1</span>
+        <h2 class="text-xl font-semibold text-slate-900 dark:text-white">Powers of two</h2>
+      </div>
+      <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">
+        Return a new array where each element is 2 raised to the power of the original.
+        <code class="font-mono">[1,2,3]</code> → <code class="font-mono">[2,4,8]</code>. Solved three ways.
+      </p>
+    </div>
+    <div class="px-6 py-5">
+      <pre class="overflow-x-auto rounded-lg bg-slate-900 p-4 text-sm leading-relaxed text-slate-100 dark:bg-black"><code>// for
+const result = [];
+for (let i = 0; i &lt; numbers.length; i++) {
+  result.push(Math.pow(2, numbers[i]));
+}
+
+// forEach
+numbers.forEach(function (number) {
+  result.push(Math.pow(2, number));
+});
+
+// map
+return numbers.map(function (number) {
+  return Math.pow(2, number);
+});</code></pre>
+      <div class="mt-4 flex flex-wrap items-center gap-3">
+        <label class="text-sm font-medium">Input</label>
+        <input id="ex1-input" value="[1, 2, 3]"
+          class="flex-1 rounded-lg border border-slate-300 bg-white px-3 py-2 font-mono text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-950" />
+        <button data-run="ex1"
+          class="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700 active:bg-indigo-800">Run</button>
+      </div>
+      <div id="ex1-out" class="mt-4"></div>
+    </div>
+  </section>
+
+  <!-- Exercise 2 -->
+  <section id="ex2" class="scroll-mt-6 overflow-hidden rounded-2xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900">
+    <div class="border-b border-slate-200 px-6 py-4 dark:border-slate-800">
+      <div class="flex items-center gap-3">
+        <span class="flex h-7 w-7 items-center justify-center rounded-full bg-indigo-600 text-sm font-bold text-white">2</span>
+        <h2 class="text-xl font-semibold text-slate-900 dark:text-white">Even / odd / N/A</h2>
+      </div>
+      <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">
+        <code class="font-mono">map</code> each number to <code class="font-mono">"even"</code> or
+        <code class="font-mono">"odd"</code>. Anything that is not a number becomes <code class="font-mono">"N/A"</code>.
+      </p>
+    </div>
+    <div class="px-6 py-5">
+      <pre class="overflow-x-auto rounded-lg bg-slate-900 p-4 text-sm leading-relaxed text-slate-100 dark:bg-black"><code>return values.map(function (value) {
+  if (typeof value !== "number") return "N/A";
+
+  // NaN is technically of type "number", so we check it separately
+  if (Number.isNaN(value)) return "N/A";
+
+  if (value % 2 === 0) return "even";
+
+  return "odd";
+});</code></pre>
+      <div class="mt-4 flex flex-wrap items-center gap-3">
+        <label class="text-sm font-medium">Input</label>
+        <input id="ex2-input" value='[1, 2, 3, "Rawan"]'
+          class="flex-1 rounded-lg border border-slate-300 bg-white px-3 py-2 font-mono text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-950" />
+        <button data-run="ex2"
+          class="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700 active:bg-indigo-800">Run</button>
+      </div>
+      <div id="ex2-out" class="mt-4"></div>
+    </div>
+  </section>
+
+  <!-- Exercise 3 -->
+  <section id="ex3" class="scroll-mt-6 overflow-hidden rounded-2xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900">
+    <div class="border-b border-slate-200 px-6 py-4 dark:border-slate-800">
+      <div class="flex items-center gap-3">
+        <span class="flex h-7 w-7 items-center justify-center rounded-full bg-indigo-600 text-sm font-bold text-white">3</span>
+        <h2 class="text-xl font-semibold text-slate-900 dark:text-white">Return all the names</h2>
+      </div>
+      <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">
+        Loop the names array with <code class="font-mono">forEach</code> — once to print, once to collect and return.
+      </p>
+    </div>
+    <div class="px-6 py-5">
+      <pre class="overflow-x-auto rounded-lg bg-slate-900 p-4 text-sm leading-relaxed text-slate-100 dark:bg-black"><code>const result = [];
+
+list.forEach(function (name) {
+  result.push(name);
+});
+
+return result;</code></pre>
+      <button data-run="ex3"
+        class="mt-4 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700 active:bg-indigo-800">Run</button>
+      <div id="ex3-out" class="mt-4"></div>
+    </div>
+  </section>
+
+  <!-- Exercise 4 -->
+  <section id="ex4" class="scroll-mt-6 overflow-hidden rounded-2xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900">
+    <div class="border-b border-slate-200 px-6 py-4 dark:border-slate-800">
+      <div class="flex items-center gap-3">
+        <span class="flex h-7 w-7 items-center justify-center rounded-full bg-indigo-600 text-sm font-bold text-white">4</span>
+        <h2 class="text-xl font-semibold text-slate-900 dark:text-white">FizzBuzz</h2>
+      </div>
+      <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">
+        ÷3 → Fizz, ÷5 → Buzz, ÷ both → Fizz Buzz, otherwise the number itself.
+      </p>
+    </div>
+    <div class="px-6 py-5">
+      <pre class="overflow-x-auto rounded-lg bg-slate-900 p-4 text-sm leading-relaxed text-slate-100 dark:bg-black"><code>return numbers.map(function (number) {
+  // the "both" case must be first, or 15 would stop at "Fizz"
+  if (number % 3 === 0 &amp;&amp; number % 5 === 0) return "Fizz Buzz";
+
+  if (number % 3 === 0) return "Fizz";
+
+  if (number % 5 === 0) return "Buzz";
+
+  return number;
+});</code></pre>
+      <div class="mt-4 flex flex-wrap items-center gap-3">
+        <label class="text-sm font-medium">Input</label>
+        <input id="ex4-input" value="[1, 3, 5, 15, 7, 9, 10, 30]"
+          class="flex-1 rounded-lg border border-slate-300 bg-white px-3 py-2 font-mono text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-950" />
+        <button data-run="ex4"
+          class="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700 active:bg-indigo-800">Run</button>
+      </div>
+      <div id="ex4-out" class="mt-4"></div>
+    </div>
+  </section>
+
+  <!-- Exercise 5 -->
+  <section id="ex5" class="scroll-mt-6 overflow-hidden rounded-2xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900">
+    <div class="border-b border-slate-200 px-6 py-4 dark:border-slate-800">
+      <div class="flex items-center gap-3">
+        <span class="flex h-7 w-7 items-center justify-center rounded-full bg-indigo-600 text-sm font-bold text-white">5</span>
+        <h2 class="text-xl font-semibold text-slate-900 dark:text-white">Every array method</h2>
+      </div>
+      <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">
+        One task per method. Run them and watch what each one <em>returns</em> — that is where they differ most.
+      </p>
+    </div>
+    <div class="px-6 py-5">
+      <p class="mb-3 text-sm text-slate-500 dark:text-slate-400">
+        Working data:
+        <code class="font-mono text-xs">students = ["Rawan","Wesam","Hind","Muhammad","Esraa","Dareen"]</code> ·
+        <code class="font-mono text-xs">grades = [88,45,92,60,33,75]</code>
+      </p>
+      <div id="ex5-buttons" class="flex flex-wrap gap-2"></div>
+      <div id="ex5-out" class="mt-4"></div>
+      <p class="mt-4 rounded-lg border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900 dark:border-amber-700/50 dark:bg-amber-950/40 dark:text-amber-200">
+        <strong>Careful:</strong> <code class="font-mono">push</code>, <code class="font-mono">pop</code>,
+        <code class="font-mono">shift</code> and <code class="font-mono">unshift</code> change the original array.
+        The demos run on a copy so the data above stays intact.
+      </p>
+    </div>
+  </section>
+
+  <!-- Method table -->
+  <section id="table" class="scroll-mt-6 overflow-hidden rounded-2xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900">
+    <div class="border-b border-slate-200 px-6 py-4 dark:border-slate-800">
+      <h2 class="text-xl font-semibold text-slate-900 dark:text-white">Method reference</h2>
+      <p class="mt-1 text-sm text-slate-600 dark:text-slate-400">What it does vs. what it gives you back.</p>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="w-full text-left text-sm">
+        <thead class="bg-slate-50 text-xs uppercase tracking-wider text-slate-500 dark:bg-slate-950/50 dark:text-slate-400">
+          <tr>
+            <th class="px-6 py-3 font-semibold">Method</th>
+            <th class="px-6 py-3 font-semibold">What it does</th>
+            <th class="px-6 py-3 font-semibold">Returns</th>
+          </tr>
+        </thead>
+        <tbody id="method-table" class="divide-y divide-slate-200 dark:divide-slate-800"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer class="pt-2 text-center text-sm text-slate-500 dark:text-slate-500">
+    Open the browser console to see the same demos printed from
+    <code class="font-mono">exercise1–5.js</code>.
+  </footer>
+</main>
+
+<!-- The real exercise files. Each one also logs its own demo to the console on load. -->
+<script src="exercise1.js"></script>
+<script src="exercise2.js"></script>
+<script src="exercise3.js"></script>
+<script src="exercise4.js"></script>
+<script src="exercise5.js"></script>
+<!-- Animated visualizer. Loaded last: it reads the functions and arrays defined above. -->
+<script src="visualizer.js"></script>
+
+<script>
+// ---- helpers -------------------------------------------------------------
+
+// Render a value the way a console would, so "undefined" and strings stay visible.
+function show(value) {
+  if (value === undefined) return "undefined";
+  return JSON.stringify(value);
+}
+
+function outputBlock(label, value, extra) {
+  const note = extra
+    ? `<p class="mt-2 text-xs text-slate-500 dark:text-slate-400">${extra}</p>`
+    : "";
+  return `
+    <div class="rounded-lg border border-emerald-300 bg-emerald-50 px-4 py-3 dark:border-emerald-800/60 dark:bg-emerald-950/30">
+      <p class="text-xs font-semibold uppercase tracking-wider text-emerald-700 dark:text-emerald-400">${label}</p>
+      <pre class="mt-1 overflow-x-auto font-mono text-sm text-emerald-950 dark:text-emerald-100">${value}</pre>
+      ${note}
+    </div>`;
+}
+
+function errorBlock(message) {
+  return `
+    <div class="rounded-lg border border-rose-300 bg-rose-50 px-4 py-3 text-sm text-rose-800 dark:border-rose-800/60 dark:bg-rose-950/30 dark:text-rose-200">
+      ${message}
+    </div>`;
+}
+
+// Parse the little input boxes. JSON only — no eval, so a typo cannot run code.
+function parseArray(text) {
+  let parsed;
+  try {
+    parsed = JSON.parse(text);
+  } catch (e) {
+    throw new Error('Not valid JSON. Try something like <code class="font-mono">[1, 2, 3]</code> (double quotes around text).');
+  }
+  if (!Array.isArray(parsed)) throw new Error("That is not an array.");
+  return parsed;
+}
+
+// Capture console.log while fn runs, so forEach's printing is visible on the page.
+function capture(fn) {
+  const lines = [];
+  const original = console.log;
+  console.log = (...args) => { lines.push(args.join(" ")); original(...args); };
+  try {
+    const returned = fn();
+    return { lines, returned };
+  } finally {
+    console.log = original;
+  }
+}
+
+// ---- exercises 1–4 -------------------------------------------------------
+
+const runners = {
+  ex1() {
+    const input = parseArray(document.getElementById("ex1-input").value);
+    return outputBlock(
+      "All three return the same array",
+      `for     → ${show(powersOfTwoForLoop(input))}
+forEach → ${show(powersOfTwoForEach(input))}
+map     → ${show(powersOfTwoMap(input))}`,
+      "Same result, three levels of manual work."
+    );
+  },
+  ex2() {
+    const input = parseArray(document.getElementById("ex2-input").value);
+    return outputBlock("map() returns", show(evenOrOdd(input)));
+  },
+  ex3() {
+    const { lines } = capture(() => printNames(names));
+    return (
+      outputBlock("forEach printed", lines.join("\n"), "printNames() itself returns undefined — forEach has no return value.") +
+      '<div class="h-3"></div>' +
+      outputBlock("getNames() returned", show(getNames(names)))
+    );
+  },
+  ex4() {
+    const input = parseArray(document.getElementById("ex4-input").value);
+    return outputBlock("fizzbuzz() returns", show(fizzbuzz(input)));
+  },
+};
+
+document.querySelectorAll("[data-run]").forEach((button) => {
+  button.addEventListener("click", () => {
+    const key = button.dataset.run;
+    const target = document.getElementById(`${key}-out`);
+    try {
+      target.innerHTML = runners[key]();
+    } catch (error) {
+      target.innerHTML = errorBlock(error.message);
+    }
+  });
+});
+
+// ---- exercise 5 ----------------------------------------------------------
+
+// `students` and `grades` already exist as globals from exercise5.js — we reuse them.
+// Re-declaring them here with const would throw and kill this whole script.
+
+const methods = [
+  {
+    name: "forEach()",
+    does: "Runs a function for every element",
+    gives: "Nothing (undefined)",
+    call: "printGrades(grades)",
+    run() {
+      const { lines, returned } = capture(() => printGrades(grades));
+      return { text: lines.join("\n") + "\n\nreturn value → " + show(returned), note: "forEach only has side effects. The function returns undefined." };
+    },
+  },
+  {
+    name: "map()",
+    does: "Creates a new transformed array",
+    gives: "New array",
+    call: "toPercentages(grades)",
+    run: () => ({ text: show(toPercentages(grades)) }),
+  },
+  {
+    name: "filter()",
+    does: "Keeps only elements that match a condition",
+    gives: "New array",
+    call: "passingGrades(grades)",
+    run: () => ({ text: show(passingGrades(grades)), note: "Shorter than the input — only grades ≥ 60 survived." }),
+  },
+  {
+    name: "find()",
+    does: "Finds the first matching element",
+    gives: "One element or undefined",
+    call: "firstFailingGrade(grades)",
+    run: () => ({
+      text: "first grade < 60      → " + show(firstFailingGrade(grades)) +
+            "\nfirst grade > 100     → " + show(grades.find((g) => g > 100)),
+      note: "One value, not an array. undefined when nothing matches.",
+    }),
+  },
+  {
+    name: "includes()",
+    does: "Checks if an element exists",
+    gives: "true / false",
+    call: 'isEnrolled(students, "Hind")',
+    run: () => ({
+      text: '"Hind"  → ' + show(isEnrolled(students, "Hind")) +
+            '\n"Layan" → ' + show(isEnrolled(students, "Layan")),
+    }),
+  },
+  {
+    name: "push()",
+    does: "Adds to the end",
+    gives: "New length",
+    call: 'addToEnd(copy, "Layan")',
+    mutates: true,
+    run: () => {
+      const copy = [...students];
+      const returned = addToEnd(copy, "Layan");
+      return { text: "returned new length → " + show(returned) + "\narray now → " + show(copy) };
+    },
+  },
+  {
+    name: "pop()",
+    does: "Removes the last element",
+    gives: "Removed element",
+    call: "removeLast(copy)",
+    mutates: true,
+    run: () => {
+      const copy = [...students];
+      const returned = removeLast(copy);
+      return { text: "returned removed → " + show(returned) + "\narray now → " + show(copy) };
+    },
+  },
+  {
+    name: "shift()",
+    does: "Removes the first element",
+    gives: "Removed element",
+    call: "removeFirst(copy)",
+    mutates: true,
+    run: () => {
+      const copy = [...students];
+      const returned = removeFirst(copy);
+      return { text: "returned removed → " + show(returned) + "\narray now → " + show(copy) };
+    },
+  },
+  {
+    name: "unshift()",
+    does: "Adds to the beginning",
+    gives: "New length",
+    call: 'addToStart(copy, "Layan")',
+    mutates: true,
+    run: () => {
+      const copy = [...students];
+      const returned = addToStart(copy, "Layan");
+      return { text: "returned new length → " + show(returned) + "\narray now → " + show(copy) };
+    },
+  },
+  {
+    name: "indexOf()",
+    does: "Finds an element's index",
+    gives: "Index or -1",
+    call: 'positionOf(students, "Esraa")',
+    run: () => ({
+      text: '"Esraa" → ' + show(positionOf(students, "Esraa")) +
+            '\n"Layan" → ' + show(positionOf(students, "Layan")),
+      note: "-1 means not found — it is not an index, so always compare against -1.",
+    }),
+  },
+];
+
+// Buttons for exercise 5
+const buttonRow = document.getElementById("ex5-buttons");
+const ex5Out = document.getElementById("ex5-out");
+
+methods.forEach((method) => {
+  const button = document.createElement("button");
+  button.textContent = method.name;
+  button.className =
+    "rounded-lg border border-slate-300 bg-white px-3 py-1.5 font-mono text-sm font-medium hover:border-indigo-500 hover:bg-indigo-50 hover:text-indigo-700 dark:border-slate-700 dark:bg-slate-950 dark:hover:border-indigo-500 dark:hover:bg-indigo-950/50 dark:hover:text-indigo-300";
+  button.addEventListener("click", () => {
+    const { text, note } = method.run();
+    ex5Out.innerHTML =
+      `<p class="mb-2 font-mono text-sm text-slate-500 dark:text-slate-400">${method.call}</p>` +
+      outputBlock(method.name + " → " + method.gives, text, note);
+  });
+  buttonRow.appendChild(button);
+});
+
+// Method reference table, built from the same list
+const tableBody = document.getElementById("method-table");
+methods.forEach((method) => {
+  const row = document.createElement("tr");
+  row.className = "hover:bg-slate-50 dark:hover:bg-slate-950/40";
+  row.innerHTML = `
+    <td class="whitespace-nowrap px-6 py-3">
+      <code class="font-mono font-semibold text-indigo-600 dark:text-indigo-400">${method.name}</code>
+      ${method.mutates ? '<span class="ml-2 rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-bold uppercase text-amber-800 dark:bg-amber-900/50 dark:text-amber-300">mutates</span>' : ""}
+    </td>
+    <td class="px-6 py-3 text-slate-600 dark:text-slate-400">${method.does}</td>
+    <td class="px-6 py-3 font-medium">${method.gives}</td>`;
+  tableBody.appendChild(row);
+});
+</script>
+</body>
+</html>

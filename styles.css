@@ -1,0 +1,44 @@
+/* Custom styles for the Higher Order Functions page.
+ *
+ * Everything else on the page is done with Tailwind utility classes written
+ * directly in index.html. Only rules that Tailwind cannot express live here —
+ * the Play CDN has no build step, so custom @keyframes must be plain CSS.
+ *
+ * Loaded AFTER the Tailwind CDN script so these rules win on conflicts. */
+
+/* ---------------------------------------------------------------- animation */
+
+/* Each new box in the visualizer pops in when it is added to an array.
+   The overshoot in the middle (1.12) plus the springy easing is what makes
+   an element feel like it "lands" instead of just appearing. */
+@keyframes boxPop {
+  0% {
+    transform: scale(0.4) translateY(-8px);
+    opacity: 0;
+  }
+  70% {
+    transform: scale(1.12);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.box-pop {
+  animation: boxPop 320ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ---------------------------------------------------------- accessibility */
+
+/* Respect the OS "reduce motion" setting. The visualizer still works — you just
+   get the states without the movement between them. */
+@media (prefers-reduced-motion: reduce) {
+  .box-pop {
+    animation: none;
+  }
+
+  * {
+    transition-duration: 1ms !important;
+  }
+}
